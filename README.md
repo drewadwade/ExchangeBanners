@@ -1,9 +1,12 @@
 # ExchangeBanners
-MS Exchange email banner rules
+MS Exchange Transport Rules
+- for detection of Unicode and Punycode characters in URLs - often used in phishing
+- for grading emails based on their SPF, DKIM, and DMARC tests
+- for identifying externally-sourced emails
 
 Typically, email banners are used only to indicate that an email originated from outside of the organisation, and there is a high risk that continually seeing that same warning banner over and over again will cause people to ignore it over time. Outside emails may be quite common for a business and especially for outward-facing staff.
 
-For fine control over the end product, we can make use of the command-line Exchange Management Shell (EMS). This will allow us to set the priority of rules (allowing specific rules to act after others) and allow us to prepend our warning to the top of the email where it will get seen. This fine-grain control, also lets us produce a whole series of Unicode character detection rules – these characters are rarely used in URLs legitimately – but only display one warning banner. Unfortunately, Exchange's regex doesn't extend to "does not contain" rules, and many non-standard Unicode characters are interpreted by Exchange as standard characters. There are also length limits on an Exchange regex rule, requiing 22 Unicode URL detection rules to cover the non-standard Unicode character space that might be mistaken for standard English characters. 
+For fine control over the end product, we can make use of the command-line Exchange Management Shell (EMS). This will allow us to set the priority of rules (allowing specific rules to act after others) and allow us to prepend our warning to the top of the email where it will get seen. This fine-grain control, also lets us produce a whole series of Unicode character detection rules – these characters are rarely used in URLs legitimately – but only display one warning banner. Unfortunately, Exchange's regex doesn't extend to "does not contain" rules, and many non-standard Unicode characters are interpreted by Exchange as standard characters. There are also length limits on an Exchange regex rule, requiring 22 Unicode URL detection rules to cover the non-standard Unicode character space that might be mistaken for standard English characters. 
 
 New-TransportRule -name "Detection - Nonstandard Characters1" -Priority 0 -SubjectOrBodyMatches Patterns "https?://.*[¥¦§̈©«¬®̄ďĐđ¡¢£¤°±¿¶·̧μÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåçèé êëìíîïðñòóôõöøùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎĒēĔĕĖėĘęĚěĜĝĞĺƖ]" -SetHeaderName “NonStandard” -Set HeaderValue “true”
 
